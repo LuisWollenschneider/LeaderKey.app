@@ -45,6 +45,8 @@ enum Cheatsheet {
 
           if action.type == .application && showAppIcons {
             AppIconImage(appPath: action.value, size: iconSize)
+          } else if !action.iconPath!.isEmpty {
+            AppIconImage(appPath: action.iconPath!, size: iconSize)
           } else {
             Image(systemName: icon)
               .foregroundStyle(.secondary)

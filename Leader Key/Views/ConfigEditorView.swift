@@ -46,7 +46,7 @@ struct GroupContentView: View {
         onAddAction: {
           withAnimation {
             group.actions.append(
-              .action(Action(key: "", type: .application, value: "")))
+              .action(Action(key: "", type: .application, value: "", iconPath: "")))
           }
         },
         onAddGroup: {
