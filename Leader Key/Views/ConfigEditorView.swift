@@ -197,6 +197,47 @@ struct ActionRow: View {
       )
       .padding(.trailing, generalPadding)
 
+      let iconSize = NSSize(width: 24, height: 24)
+
+      if action.type == .application {
+        AppIconImage(appPath: action.value, size: iconSize)
+          .padding(.horizontal, 8)
+      } else {
+        var icon: String {
+          switch action.type {
+          case .application: return "macwindow"
+          case .url: return "link"
+          case .command: return "terminal"
+          case .folder: return "folder"
+          default: return "questionmark"
+          }
+        }
+
+        Button(
+          action: {
+            let panel = NSOpenPanel()
+            panel.allowedContentTypes = [.applicationBundle, .application]
+            panel.canChooseFiles = true
+            panel.canChooseDirectories = true
+            panel.allowsMultipleSelection = false
+            panel.directoryURL = URL(fileURLWithPath: "/Applications")
+
+            if panel.runModal() == .OK {
+              action.iconPath = panel.url?.path ?? ""
+            } else {
+              action.iconPath = ""
+            }
+          }) {
+            if !action.iconPath!.isEmpty {
+              AppIconImage(appPath: action.iconPath!, size: iconSize)
+            } else {
+              Image(systemName: icon)
+                .foregroundStyle(.secondary)
+                .frame(width: iconSize.width, height: iconSize.height, alignment: .center)
+            }
+          }
+      }
+
       Button(role: .none, action: onDuplicate) {
         Image(systemName: "document.on.document")
       }
@@ -333,6 +374,9 @@ struct GroupRow: View {
       ),
       .action(
         Action(key: "f", type: .application, value: "/Applications/Firefox.app")
+      ),
+      .action(
+        Action(key: "a", type: .command, value: "ls", iconPath: "")
       ),
 
       // Level 1 group with actions
