@@ -175,6 +175,7 @@ struct ActionRow: View {
         Button("Symbol") {
           iconPickerPresented = true
         }
+        Divider()
         Button("✕ Clear") {
           action.iconPath = nil
         }
