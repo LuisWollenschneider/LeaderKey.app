@@ -158,45 +158,6 @@ struct ActionRow: View {
       .frame(width: 110)
       .labelsHidden()
 
-      switch action.type {
-      case .application:
-        Button("Choose…") {
-          let panel = NSOpenPanel()
-          panel.allowedContentTypes = [.applicationBundle, .application]
-          panel.canChooseFiles = true
-          panel.canChooseDirectories = true
-          panel.allowsMultipleSelection = false
-          panel.directoryURL = URL(fileURLWithPath: "/Applications")
-
-          if panel.runModal() == .OK {
-            action.value = panel.url?.path ?? ""
-          }
-        }
-        Text(action.value).truncationMode(.middle).lineLimit(1)
-      case .folder:
-        Button("Choose…") {
-          let panel = NSOpenPanel()
-          panel.allowsMultipleSelection = false
-          panel.canChooseDirectories = true
-          panel.canChooseFiles = false
-          panel.directoryURL = FileManager.default.homeDirectoryForCurrentUser
-
-          if panel.runModal() == .OK {
-            action.value = panel.url?.path ?? ""
-          }
-        }
-        Text(action.value).truncationMode(.middle).lineLimit(1)
-      default:
-        TextField("Value", text: $action.value)
-      }
-
-      Spacer()
-
-      TextField(action.bestGuessDisplayName, text: $action.label ?? "").frame(
-        width: 120
-      )
-      .padding(.trailing, generalPadding)
-
       let iconSize = NSSize(width: 24, height: 24)
 
       if action.type == .application {
@@ -237,6 +198,45 @@ struct ActionRow: View {
             }
           }
       }
+
+      switch action.type {
+      case .application:
+        Button("Choose…") {
+          let panel = NSOpenPanel()
+          panel.allowedContentTypes = [.applicationBundle, .application]
+          panel.canChooseFiles = true
+          panel.canChooseDirectories = true
+          panel.allowsMultipleSelection = false
+          panel.directoryURL = URL(fileURLWithPath: "/Applications")
+
+          if panel.runModal() == .OK {
+            action.value = panel.url?.path ?? ""
+          }
+        }
+        Text(action.value).truncationMode(.middle).lineLimit(1)
+      case .folder:
+        Button("Choose…") {
+          let panel = NSOpenPanel()
+          panel.allowsMultipleSelection = false
+          panel.canChooseDirectories = true
+          panel.canChooseFiles = false
+          panel.directoryURL = FileManager.default.homeDirectoryForCurrentUser
+
+          if panel.runModal() == .OK {
+            action.value = panel.url?.path ?? ""
+          }
+        }
+        Text(action.value).truncationMode(.middle).lineLimit(1)
+      default:
+        TextField("Value", text: $action.value)
+      }
+
+      Spacer()
+
+      TextField(action.bestGuessDisplayName, text: $action.label ?? "").frame(
+        width: 120
+      )
+      .padding(.trailing, generalPadding)
 
       Button(role: .none, action: onDuplicate) {
         Image(systemName: "document.on.document")
