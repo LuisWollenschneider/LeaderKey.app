@@ -158,46 +158,26 @@ struct ActionRow: View {
       .frame(width: 110)
       .labelsHidden()
 
-      let iconSize = NSSize(width: 24, height: 24)
-
-      if action.type == .application {
-        AppIconImage(appPath: action.value, size: iconSize)
-          .padding(.horizontal, 8)
-      } else {
-        var icon: String {
-          switch action.type {
-          case .application: return "macwindow"
-          case .url: return "link"
-          case .command: return "terminal"
-          case .folder: return "folder"
-          default: return "questionmark"
+      Menu {
+        Button("App Icon") {
+          let panel = NSOpenPanel()
+          panel.allowedContentTypes = [.applicationBundle, .application]
+          panel.canChooseFiles = true
+          panel.canChooseDirectories = true
+          panel.allowsMultipleSelection = false
+          panel.directoryURL = URL(fileURLWithPath: "/Applications")
+          if panel.runModal() == .OK {
+            action.iconPath = panel.url?.path
           }
         }
-
-        Button(
-          action: {
-            let panel = NSOpenPanel()
-            panel.allowedContentTypes = [.applicationBundle, .application]
-            panel.canChooseFiles = true
-            panel.canChooseDirectories = true
-            panel.allowsMultipleSelection = false
-            panel.directoryURL = URL(fileURLWithPath: "/Applications")
-
-            if panel.runModal() == .OK {
-              action.iconPath = panel.url?.path
-            } else {
-              action.iconPath = nil
-            }
-          }) {
-            if action.iconPath != nil && !action.iconPath!.isEmpty {
-              AppIconImage(appPath: action.iconPath!, size: iconSize)
-            } else {
-              Image(systemName: icon)
-                .foregroundStyle(.secondary)
-                .frame(width: iconSize.width, height: iconSize.height, alignment: .center)
-            }
-          }
+        Button("✕ Clear") {
+          action.iconPath = nil
+        }
+      } label: {
+        let iconSize = NSSize(width: 24, height: 24)
+        actionIcon(action: action, iconSize: iconSize)
       }
+      .buttonStyle(PlainButtonStyle())
 
       switch action.type {
       case .application:

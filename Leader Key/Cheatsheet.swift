@@ -25,16 +25,6 @@ enum Cheatsheet {
     @Default(.showAppIconsInCheatsheet) var showAppIcons
     @Default(.showDetailsInCheatsheet) var showDetails
 
-    var icon: String {
-      switch action.type {
-      case .application: return "macwindow"
-      case .url: return "link"
-      case .command: return "terminal"
-      case .folder: return "folder"
-      default: return "questionmark"
-      }
-    }
-
     var body: some SwiftUI.View {
       HStack {
         HStack {
@@ -43,15 +33,7 @@ enum Cheatsheet {
           }
           KeyBadge(key: action.key ?? "●")
 
-          if action.type == .application && showAppIcons {
-            AppIconImage(appPath: action.value, size: iconSize)
-          } else if action.iconPath != nil && !action.iconPath!.isEmpty {
-            AppIconImage(appPath: action.iconPath!, size: iconSize)
-          } else {
-            Image(systemName: icon)
-              .foregroundStyle(.secondary)
-              .frame(width: iconSize.width, height: iconSize.height, alignment: .center)
-          }
+          actionIcon(action: action, iconSize: iconSize)
 
           Text(action.displayName)
             .lineLimit(1)
