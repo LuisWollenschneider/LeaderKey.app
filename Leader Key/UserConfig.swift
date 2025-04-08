@@ -307,7 +307,7 @@ enum ActionOrGroup: Codable, Equatable {
       self = .group(Group(key: key, label: label, actions: actions))
     default:
       let value = try container.decode(String.self, forKey: .value)
-      let iconPath = try container.decodeIfPresent(String.self, forKey: .iconPath) ?? ""
+      let iconPath = try container.decodeIfPresent(String.self, forKey: .iconPath)
       self = .action(Action(key: key, type: type, label: label, value: value, iconPath: iconPath))
     }
   }
@@ -320,7 +320,7 @@ enum ActionOrGroup: Codable, Equatable {
       try container.encode(action.type, forKey: .type)
       try container.encode(action.value, forKey: .value)
       try container.encode(action.label, forKey: .label)
-      try container.encode(action.iconPath, forKey: .iconPath)
+      try container.encodeIfPresent(action.iconPath, forKey: .iconPath)
     case .group(let group):
       try container.encode(group.key, forKey: .key)
       try container.encode(Type.group, forKey: .type)

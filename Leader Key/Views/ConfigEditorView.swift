@@ -46,7 +46,7 @@ struct GroupContentView: View {
         onAddAction: {
           withAnimation {
             group.actions.append(
-              .action(Action(key: "", type: .application, value: "", iconPath: "")))
+              .action(Action(key: "", type: .application, value: "")))
           }
         },
         onAddGroup: {
@@ -223,12 +223,12 @@ struct ActionRow: View {
             panel.directoryURL = URL(fileURLWithPath: "/Applications")
 
             if panel.runModal() == .OK {
-              action.iconPath = panel.url?.path ?? ""
+              action.iconPath = panel.url?.path
             } else {
-              action.iconPath = ""
+              action.iconPath = nil
             }
           }) {
-            if !action.iconPath!.isEmpty {
+            if action.iconPath != nil && !action.iconPath!.isEmpty {
               AppIconImage(appPath: action.iconPath!, size: iconSize)
             } else {
               Image(systemName: icon)
@@ -376,7 +376,7 @@ struct GroupRow: View {
         Action(key: "f", type: .application, value: "/Applications/Firefox.app")
       ),
       .action(
-        Action(key: "a", type: .command, value: "ls", iconPath: "")
+        Action(key: "a", type: .command, value: "ls")
       ),
 
       // Level 1 group with actions
