@@ -1,4 +1,5 @@
 import SwiftUI
+import SymbolPicker
 
 let generalPadding: CGFloat = 8
 
@@ -138,6 +139,7 @@ struct ActionRow: View {
   let onDuplicate: () -> Void
   @FocusState private var isKeyFocused: Bool
   @EnvironmentObject var userConfig: UserConfig
+  @State private var iconPickerPresented = false
 
   var body: some View {
     HStack(spacing: generalPadding) {
@@ -170,6 +172,9 @@ struct ActionRow: View {
             action.iconPath = panel.url?.path
           }
         }
+        Button("Symbol") {
+          iconPickerPresented = true
+        }
         Button("✕ Clear") {
           action.iconPath = nil
         }
@@ -178,6 +183,9 @@ struct ActionRow: View {
         actionIcon(action: action, iconSize: iconSize)
       }
       .buttonStyle(PlainButtonStyle())
+      .sheet(isPresented: $iconPickerPresented) {
+        SymbolPicker(symbol: $action.iconPath)
+      }
 
       switch action.type {
       case .application:

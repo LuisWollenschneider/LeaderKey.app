@@ -14,7 +14,11 @@ func actionIcon(action: Action, iconSize: NSSize) -> some View {
     if action.iconPath!.hasSuffix(".app") {
       return AnyView(AppIconImage(appPath: action.iconPath!, size: iconSize))
     } else {
-      // More picker options
+      return AnyView(
+        Image(systemName: action.iconPath!)
+          .foregroundStyle(.secondary)
+          .frame(width: iconSize.width, height: iconSize.height, alignment: .center)
+      )
     }
   } else if action.type == .application {
     return AnyView(AppIconImage(appPath: action.value, size: iconSize))
