@@ -22,7 +22,6 @@ enum Cheatsheet {
   struct ActionRow: SwiftUI.View {
     let action: Action
     let indent: Int
-    @Default(.showAppIconsInCheatsheet) var showAppIcons
     @Default(.showDetailsInCheatsheet) var showDetails
 
     var body: some SwiftUI.View {

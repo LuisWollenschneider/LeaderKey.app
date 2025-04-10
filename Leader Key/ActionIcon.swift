@@ -1,3 +1,4 @@
+import Defaults
 import SwiftUI
 
 func actionIcon(item: ActionOrGroup, iconSize: NSSize) -> some View {
@@ -14,7 +15,9 @@ func actionIcon(item: ActionOrGroup, iconSize: NSSize) -> some View {
   if iconPath != nil && !iconPath!.isEmpty {
     if iconPath!.hasSuffix(".app") {
       // App Icon
-      return AnyView(AppIconImage(appPath: iconPath!, size: iconSize))
+      if Defaults[.showAppIconsInCheatsheet] {
+        return AnyView(AppIconImage(appPath: iconPath!, size: iconSize))
+      }
     } else {
       // SF Symbol
       return AnyView(
@@ -36,7 +39,7 @@ func actionIcon(item: ActionOrGroup, iconSize: NSSize) -> some View {
     }
   }
 
-  if type == .application {
+  if type == .application && Defaults[.showAppIconsInCheatsheet] {
     var view: AnyView? {
       switch item {
       case .action(let action):

@@ -1,3 +1,4 @@
+import Defaults
 import SwiftUI
 import SymbolPicker
 
@@ -140,6 +141,7 @@ struct ActionRow: View {
   @FocusState private var isKeyFocused: Bool
   @EnvironmentObject var userConfig: UserConfig
   @State private var iconPickerPresented = false
+  @Default(.showAppIconsInCheatsheet) var showAppIcons
 
   var body: some View {
     HStack(spacing: generalPadding) {
@@ -161,15 +163,17 @@ struct ActionRow: View {
       .labelsHidden()
 
       Menu {
-        Button("App Icon") {
-          let panel = NSOpenPanel()
-          panel.allowedContentTypes = [.applicationBundle, .application]
-          panel.canChooseFiles = true
-          panel.canChooseDirectories = true
-          panel.allowsMultipleSelection = false
-          panel.directoryURL = URL(fileURLWithPath: "/Applications")
-          if panel.runModal() == .OK {
-            action.iconPath = panel.url?.path
+        if showAppIcons {
+          Button("App Icon") {
+            let panel = NSOpenPanel()
+            panel.allowedContentTypes = [.applicationBundle, .application]
+            panel.canChooseFiles = true
+            panel.canChooseDirectories = true
+            panel.allowsMultipleSelection = false
+            panel.directoryURL = URL(fileURLWithPath: "/Applications")
+            if panel.runModal() == .OK {
+              action.iconPath = panel.url?.path
+            }
           }
         }
         Button("Symbol") {
