@@ -33,7 +33,7 @@ enum Cheatsheet {
           }
           KeyBadge(key: action.key ?? "●")
 
-          actionIcon(action: action, iconSize: iconSize)
+          actionIcon(item: ActionOrGroup.action(action), iconSize: iconSize)
 
           Text(action.displayName)
             .lineLimit(1)
@@ -63,10 +63,14 @@ enum Cheatsheet {
             Text("  ")
           }
           KeyBadge(key: group.key ?? "")
-          Image(systemName: "folder")
+
+          actionIcon(item: ActionOrGroup.group(group), iconSize: iconSize)
+
+          Image(systemName: "chevron.right")
             .foregroundStyle(.secondary)
-            .frame(width: iconSize.width, height: iconSize.height, alignment: .center)
+
           Text(group.displayName)
+
           Spacer()
           if showDetails {
             Text("\(group.actions.count.description) item(s)")
@@ -182,54 +186,5 @@ struct CheatsheetView_Previews: PreviewProvider {
   static var previews: some View {
     Cheatsheet.CheatsheetView()
       .environmentObject(UserState(userConfig: UserConfig()))
-  }
-}
-
-struct AppIconImage: View {
-  let appPath: String
-  let size: NSSize
-  let defaultSystemName: String = "questionmark.circle"
-
-  init(appPath: String, size: NSSize = NSSize(width: 24, height: 24)) {
-    self.appPath = appPath
-    self.size = size
-  }
-
-  var body: some View {
-    let image =
-      if let icon = getAppIcon(path: appPath) {
-        Image(nsImage: icon)
-      } else {
-        Image(systemName: defaultSystemName)
-      }
-    image.resizable()
-      .scaledToFit()
-      .frame(width: size.width, height: size.height)
-  }
-
-  private func getAppIcon(path: String) -> NSImage? {
-    guard FileManager.default.fileExists(atPath: path) else {
-      return nil
-    }
-
-    let icon = NSWorkspace.shared.icon(forFile: path)
-    let resizedIcon = NSImage(size: size, flipped: false) { rect in
-      let iconRect = NSRect(origin: .zero, size: icon.size)
-      icon.draw(in: rect, from: iconRect, operation: .sourceOver, fraction: 1)
-      return true
-    }
-    return resizedIcon
-  }
-}
-
-struct AppImagePreview: PreviewProvider {
-  static var previews: some View {
-    let appPaths = ["/Applications/Xcode.app", "/Applications/Safari.app", "/invalid/path"]
-    VStack {
-      ForEach(appPaths, id: \.self) { path in
-        AppIconImage(appPath: path)
-      }
-    }
-    .padding()
   }
 }

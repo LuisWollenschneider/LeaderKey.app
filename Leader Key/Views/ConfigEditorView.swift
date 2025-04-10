@@ -181,7 +181,7 @@ struct ActionRow: View {
         }
       } label: {
         let iconSize = NSSize(width: 24, height: 24)
-        actionIcon(action: action, iconSize: iconSize)
+        actionIcon(item: ActionOrGroup.action(action), iconSize: iconSize)
       }
       .buttonStyle(PlainButtonStyle())
       .sheet(isPresented: $iconPickerPresented) {
@@ -264,6 +264,7 @@ struct GroupRow: View {
   let onDelete: () -> Void
   let onDuplicate: () -> Void
   @EnvironmentObject var userConfig: UserConfig
+  @State private var iconPickerPresented = false
 
   private var isExpanded: Bool {
     expandedGroups.contains(path)
@@ -289,6 +290,34 @@ struct GroupRow: View {
           validationError: validationErrorForKey,
           onKeyChanged: { userConfig.finishEditingKey() }
         )
+
+        Menu {
+          Button("App Icon") {
+            let panel = NSOpenPanel()
+            panel.allowedContentTypes = [.applicationBundle, .application]
+            panel.canChooseFiles = true
+            panel.canChooseDirectories = true
+            panel.allowsMultipleSelection = false
+            panel.directoryURL = URL(fileURLWithPath: "/Applications")
+            if panel.runModal() == .OK {
+              group.iconPath = panel.url?.path
+            }
+          }
+          Button("Symbol") {
+            iconPickerPresented = true
+          }
+          Divider()
+          Button("✕ Clear") {
+            group.iconPath = nil
+          }
+        } label: {
+          let iconSize = NSSize(width: 24, height: 24)
+          actionIcon(item: ActionOrGroup.group(group), iconSize: iconSize)
+        }
+        .buttonStyle(PlainButtonStyle())
+        .sheet(isPresented: $iconPickerPresented) {
+          SymbolPicker(symbol: $group.iconPath)
+        }
 
         Button(
           role: .none,
