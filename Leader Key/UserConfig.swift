@@ -320,13 +320,17 @@ enum ActionOrGroup: Codable, Equatable {
       try container.encode(action.key, forKey: .key)
       try container.encode(action.type, forKey: .type)
       try container.encode(action.value, forKey: .value)
-      try container.encodeIfPresent(action.label, forKey: .label)
+      if action.label != nil && !action.label!.isEmpty {
+        try container.encodeIfPresent(action.label, forKey: .label)
+      }
       try container.encodeIfPresent(action.iconPath, forKey: .iconPath)
     case .group(let group):
       try container.encode(group.key, forKey: .key)
       try container.encode(Type.group, forKey: .type)
       try container.encode(group.actions, forKey: .actions)
-      try container.encodeIfPresent(group.label, forKey: .label)
+      if group.label != nil && !group.label!.isEmpty {
+        try container.encodeIfPresent(group.label, forKey: .label)
+      }
       try container.encodeIfPresent(group.iconPath, forKey: .iconPath)
     }
   }
